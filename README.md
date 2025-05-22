@@ -94,7 +94,7 @@ ou
 - Crie um arquivo `.env` na pasta frontend com o seguinte conteúdo:  
 `VITE_API_URL=http://127.0.0.1:5000`
 
-> 🔥 Modifique se estiver rodando o backend em outro endereço ou servidor.
+> Modifique se estiver rodando o backend em outro endereço ou servidor.
 
 - Execute o frontend:  
 `npm run dev`  
@@ -128,13 +128,6 @@ http://localhost:5173
 
 ---
 
-## 🚀 Deploy (Futuro)
-
-- 🔸 Backend: Railway, Render, Fly.io, VPS, Heroku  
-- 🔸 Frontend: Vercel, Netlify, GitHub Pages, Surge  
-
----
-
 ## 🐞 Contribuição
 
 Contribuições são bem-vindas!  
@@ -152,4 +145,5 @@ Este projeto está licenciado sob a Licença MIT. Consulte o arquivo [LICENSE](.
 
 **Ítalo Guilherme**  
 Ulbra Palmas – Engenharia de Software / Banco de Dados 2025/1  
+Prof. Fábio Castro
 https://github.com/italoglhrm  
