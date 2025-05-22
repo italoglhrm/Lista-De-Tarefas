@@ -144,6 +144,5 @@ Este projeto está licenciado sob a Licença MIT. Consulte o arquivo [LICENSE](.
 ## 💻 Desenvolvido por
 
 **Ítalo Guilherme**  
-Ulbra Palmas – Engenharia de Software / Banco de Dados 2025/1  
-Prof. Fábio Castro
+Ulbra Palmas – Engenharia de Software / Banco de Dados 2025/1 / Prof. Fábio Castro
 https://github.com/italoglhrm  
