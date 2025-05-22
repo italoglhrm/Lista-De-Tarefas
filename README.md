@@ -71,7 +71,7 @@ Desenvolvido com:
 - A conexão com o MongoDB está definida diretamente no arquivo `db.py`:  
 `client = MongoClient("mongodb://localhost:27017")`  
 
-> 🔥 Se estiver utilizando MongoDB Atlas, altere a URI acima.
+> Se estiver utilizando MongoDB Atlas, altere a URI acima.
 
 - Execute o backend:  
 `python app.py`
