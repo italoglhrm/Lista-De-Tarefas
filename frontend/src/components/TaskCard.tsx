@@ -197,15 +197,26 @@ export default function TaskCard({
               ) : (
                 <ul style={{ marginTop: '0.5rem' }}>
                   {comments.map((comment, idx) => (
-                    <li key={idx}>
-                      • {comment.text}
-                      <br />
+                    <li key={idx} style={{ marginBottom: '0.5rem' }}>
+                      {comment.text && (
+                        <>
+                           {comment.text}
+                          <br />
+                        </>
+                      )}
                       <small style={{ color: "#999" }}>
-                        {new Date(comment.date).toLocaleString()}
+                        {new Date(comment.date).toLocaleString('pt-BR', {
+                          day: '2-digit',
+                          month: '2-digit',
+                          year: 'numeric',
+                          hour: '2-digit',
+                          minute: '2-digit',
+                        })}
                       </small>
                     </li>
                   ))}
                 </ul>
+
               )}
 
               <div
