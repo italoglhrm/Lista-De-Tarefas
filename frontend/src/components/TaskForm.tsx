@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import catGif from '../assets/cat-meme-cat-type.gif';
+import catGif from '../assets/gatinho-gato.gif';
 
 interface TaskFormProps {
   onAdd: (title: string, description: string) => void;
@@ -93,7 +93,7 @@ export default function TaskForm({ onAdd }: TaskFormProps) {
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'flex-end',
-          textAlign: 'right',
+          textAlign: 'center',
         }}
       >
         <h1
@@ -105,20 +105,7 @@ export default function TaskForm({ onAdd }: TaskFormProps) {
         >
           Lista de Tarefas
         </h1>
-        <h2
-          style={{
-            fontSize: '1rem',
-            marginBottom: '1rem',
-            maxWidth: '300px',
-            lineHeight: '1.4',
-          }}
-        >
-          Criado por <strong>Ítalo Guilherme</strong>
-          <br />
-          Banco de Dados – Prof. Fábio Castro
-          <br />
-          Ulbra Palmas 2025/1
-        </h2>
+        
         <img
           src={catGif}
           alt="Gato programador digitando"
@@ -129,6 +116,20 @@ export default function TaskForm({ onAdd }: TaskFormProps) {
             boxShadow: 'none',
           }}
         />
+        <h2
+          style={{
+            fontSize: '0.75rem',
+            marginBottom: '1rem',
+            maxWidth: '300px',
+            lineHeight: '1.4',
+          }}
+        >
+          Criado por <strong>Ítalo e Julia</strong>
+          <br />
+          Banco de Dados – Prof. Fábio Castro
+          <br />
+          Ulbra Palmas 2025/1
+        </h2>
       </div>
     </div>
   );

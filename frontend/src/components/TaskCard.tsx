@@ -127,7 +127,7 @@ export default function TaskCard({
                 {completed ? (
                   <CheckCircle size={20} color="#10B981" />
                 ) : (
-                  <Circle size={20} color="#6B7280" />
+                  <Circle size={20} color="#c8ced6" />
                 )}
               </button>
 
@@ -193,7 +193,7 @@ export default function TaskCard({
               <strong style={{ marginBottom: '0.5rem', display: 'block' }}>Comentários:</strong>
 
               {comments.length === 0 ? (
-                <p style={{ fontStyle: 'italic', color: '#666' }}>Nenhum comentário ainda.</p>
+                <p style={{ fontStyle: 'italic', color: '#c8ced6' }}>Nenhum comentário ainda.</p>
               ) : (
                 <ul style={{ marginTop: '0.5rem' }}>
                   {comments.map((comment, idx) => (
