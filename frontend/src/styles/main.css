@@ -90,6 +90,13 @@ body {
   transition: background-color 0.2s ease;
 }
 
+.suas-tarefas-titulo {
+  font-family: 'Chakra Petch', sans-serif;
+  font-size: 1.7rem;
+  font-weight: 600;
+  color: var(--foreground);
+}
+
 .tarefa-titulo {
   font-family: 'Chakra Petch', sans-serif;
   font-size: 1rem;
@@ -170,4 +177,23 @@ button {
   align-items: center;
   justify-content: center;
   transition: background 0.2s, color 0.2s;
+}
+
+.botao-tag-selector {
+  padding: 0.3rem 0.6rem;
+  font-size: 0.75rem;
+  border-radius: 12px;
+  border: 1px solid #ccc;
+  background-color: transparent;
+  cursor: pointer;
+  color: inherit; /* Or your default button text color */
+  font-weight: normal;
+  transition: background-color 0.2s, border-color 0.2s, color 0.2s; /* Smooth transition */
+}
+
+.botao-tag-selector.selected {
+  border-color: #000000;
+  background-color: #e0e0e0; /* Light grey background */
+  color: #000000;       /* Black text and checkmark */
+  font-weight: 600;
 }
