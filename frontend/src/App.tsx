@@ -41,7 +41,7 @@ export default function App() {
   const [statusFilter, setStatusFilter] = useState<'pendente' | 'em andamento' | 'concluída' | 'todos'>('todos');
   const [dateFilter, setDateFilter] = useState('');
   const [tagFilters, setTagFilters] = useState<string[]>([]);
-  const [availableUsers] = useState<string[]>(['Ítalo', 'Júlia']);
+  const [availableUsers] = useState<string[]>(['Ítalo', 'Julia']);
   const [currentUser, setCurrentUser] = useState('Ítalo');
   const [showUserDropdown, setShowUserDropdown] = useState(false);
   const userSwitcherContainerRef = useRef<HTMLDivElement>(null);
@@ -272,6 +272,8 @@ export default function App() {
                 status: { pendentes: number; em_andamento: number; concluídas: number };
                 por_dia: { date: string; count: number }[];
                 tags_top: { label: string; count: number }[];
+                tempo_medio_conclusao: number;
+                taxa_conclusao_semanal: number;
               }}
             />
           ) : null

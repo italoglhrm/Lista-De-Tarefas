@@ -9,25 +9,40 @@ interface UserDashboardProps {
     status: { pendentes: number; em_andamento: number; concluídas: number };
     por_dia: { date: string; count: number }[];
     tags_top: { label: string; count: number }[];
+    tempo_medio_conclusao: number;
+    taxa_conclusao_semanal: number;
   };
 }
 
 export default function UserDashboardCharts({ user, data }: UserDashboardProps) {
+  const status = data?.status || {};
   const statusData = [
-    { name: 'Pendentes', value: data.status?.pendentes || 0, color: '#FACC15' },
-    { name: 'Em Andamento', value: data.status?.em_andamento || 0, color: '#3B82F6' },
-    { name: 'Concluídas', value: data.status?.concluídas || 0, color: '#9333EA' },
+    { name: 'Pendentes', value: status.pendentes ?? 0, color: '#FACC15' },
+    { name: 'Em Andamento', value: status.em_andamento ?? 0, color: '#3B82F6' },
+    { name: 'Concluídas', value: status.concluídas ?? 0, color: '#9333EA' },
   ];
 
   const pieColors = ['#9333EA', '#FACC15', '#3B82F6', '#10B981', '#EC4899'];
 
   return (
     <section style={{ marginTop: '3rem' }}>
-      <h3 className="tarefa-secao-titulo" style={{ textAlign: 'center' }}>
+      <h3 className="tarefa-secao-titulo" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1.5rem' }}>
         Seu Dashboard
       </h3>
 
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '2rem', marginTop: '2rem', justifyContent: 'center' }}>
+      {/* Indicadores de produtividade */}
+      <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', justifyContent: 'center', marginBottom: '2rem' }}>
+        <div style={{ backgroundColor: '#111', padding: '1rem', borderRadius: '1rem', minWidth: '220px' }}>
+          <p style={{ fontSize: '0.9rem', color: '#aaa', margin: 0 }}>Tempo médio de conclusão</p>
+          <h4 style={{ fontSize: '1.5rem', margin: 0 }}>{data.tempo_medio_conclusao} dias</h4>
+        </div>
+        <div style={{ backgroundColor: '#111', padding: '1rem', borderRadius: '1rem', minWidth: '220px' }}>
+          <p style={{ fontSize: '0.9rem', color: '#aaa', margin: 0 }}>Taxa de conclusão semanal</p>
+          <h4 style={{ fontSize: '1.5rem', margin: 0 }}>{data.taxa_conclusao_semanal} tarefas/dia</h4>
+        </div>
+      </div>
+
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '2rem', justifyContent: 'center' }}>
         {/* Barras de status */}
         <div style={{ flex: '1 1 320px', background: '#111', padding: '1rem', borderRadius: '1rem' }}>
           <h4>Status</h4>
@@ -46,9 +61,9 @@ export default function UserDashboardCharts({ user, data }: UserDashboardProps) 
           </ResponsiveContainer>
         </div>
 
-        {/* Conclusões por dia */}
+        {/* Conclusões por data */}
         <div style={{ flex: '1 1 320px', background: '#111', padding: '1rem', borderRadius: '1rem' }}>
-          <h4>Conclusões por Dia</h4>
+          <h4>Por Data</h4>
           <ResponsiveContainer width="100%" height={220}>
             <LineChart data={data.por_dia}>
               <CartesianGrid strokeDasharray="3 3" stroke="#333" />

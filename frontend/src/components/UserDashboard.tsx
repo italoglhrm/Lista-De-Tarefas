@@ -19,7 +19,8 @@ export default function UserDashboard({ user, data }: UserDashboardProps) {
 
   return (
     <section style={{ marginTop: '3rem' }}>
-      <h3 className="tarefa-secao-titulo">Seu Dashboard</h3>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1.5rem' }}>
+      <h2 className="tarefa-secao-titulo">Suas Tarefas</h2> </div>
       <div style={{ background: '#111', padding: '1rem', borderRadius: '1rem' }}>
         <ResponsiveContainer width="100%" height={300}>
           <BarChart data={chartData} margin={{ top: 20, right: 30, left: 0, bottom: 5 }}>
