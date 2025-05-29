@@ -1,12 +1,6 @@
-import { useState, useEffect } from 'react'; 
-import {
-  CheckCircle,
-  Circle,
-  Pencil,
-  Trash2,
-  MessageSquare,
-} from 'lucide-react';
-import { PREDEFINED_TAGS } from '../App'; 
+import { useState, useEffect } from 'react';
+import { CheckCircle, Circle, Pencil, Trash2, MessageSquare } from 'lucide-react';
+import { PREDEFINED_TAGS } from '../App'; // Assumindo que App.tsx está no diretório pai
 
 interface Comment {
   text: string;
@@ -18,11 +12,12 @@ interface TaskCardProps {
   title: string;
   description: string;
   completed: boolean;
+  creationDate: string;
   comments: Comment[];
-  tags: string[]; // Added tags prop
+  tags: string[];
   onToggle: (id: string) => void;
   onRemove: (id: string) => void;
-  onEdit: (id: string, newTitle: string, newDescription: string, newTags: string[]) => void; // Updated onEdit signature
+  onEdit: (id: string, newTitle: string, newDescription: string, newTags: string[]) => void;
   onAddComment: (id: string, comment: string) => void;
 }
 
@@ -31,8 +26,9 @@ export default function TaskCard({
   title,
   description,
   completed,
+  creationDate,
   comments,
-  tags, 
+  tags,
   onToggle,
   onRemove,
   onEdit,
@@ -41,7 +37,7 @@ export default function TaskCard({
   const [isEditing, setIsEditing] = useState(false);
   const [editedTitle, setEditedTitle] = useState(title);
   const [editedDescription, setEditedDescription] = useState(description);
-  const [editedTags, setEditedTags] = useState<string[]>(tags || []); // State for tags in edit mode
+  const [editedTags, setEditedTags] = useState<string[]>([]);
   const [showComments, setShowComments] = useState(false);
   const [newComment, setNewComment] = useState('');
 
@@ -54,7 +50,7 @@ export default function TaskCard({
   }, [isEditing, title, description, tags]);
 
   const handleEditSubmit = () => {
-    onEdit(id, editedTitle, editedDescription, editedTags); // Pass editedTags
+    onEdit(id, editedTitle, editedDescription, editedTags);
     setIsEditing(false);
   };
 
@@ -75,41 +71,19 @@ export default function TaskCard({
   return (
     <div className="card-tarefa" style={{ position: 'relative', marginBottom: '1rem' }}>
       {isEditing ? (
-        <div
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '0.5rem',
-            // maxWidth: '875px', 
-            // width: '100%'    
-          }}
-        >
-          {/* Title Input */}
-          <input
-            className="input-estilizado"
-            value={editedTitle}
-            onChange={(e) => setEditedTitle(e.target.value)}
-          />
-          {/* Description Textarea */}
-          <textarea
-            className="input-estilizado"
-            value={editedDescription}
-            onChange={(e) => setEditedDescription(e.target.value)}
-            rows={3}
-            style={{ resize: 'none' }}
-          />
-
-          {/* Tag Selection for Editing */}
-          <div style={{ marginTop: '0.5rem', marginBottom: '0.5rem' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+          <input className="input-estilizado" value={editedTitle} onChange={(e) => setEditedTitle(e.target.value)} />
+          <textarea className="input-estilizado" value={editedDescription} onChange={(e) => setEditedDescription(e.target.value)} rows={3} style={{ resize: 'none' }} />
+          <div style={{ width: '100%' }}>
             <h4 style={{ fontSize: '0.875rem', fontWeight: '600', marginBottom: '0.5rem' }}>Tags:</h4>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
-              {PREDEFINED_TAGS.map((tagOption) => { // Assuming PREDEFINED_TAGS is available here
+              {PREDEFINED_TAGS.map((tagOption) => {
                 const isSelected = editedTags.includes(tagOption.id);
                 return (
                   <button
                     type="button"
                     key={tagOption.id}
-                    onClick={() => handleTagSelection(tagOption.id)} // Ensure handleTagSelection is defined in TaskCard for editedTags
+                    onClick={() => handleTagSelection(tagOption.id)}
                     className={`botao-tag-selector ${isSelected ? 'selected' : ''}`}
                     style={{
                       padding: '0.3rem 0.75rem',
@@ -117,7 +91,7 @@ export default function TaskCard({
                       borderRadius: '12px',
                       backgroundColor: tagOption.color,
                       color: '#000000',
-                      border: isSelected ? '2px solid #000000' : '2px solid #d1d5db', // Consistent styling
+                      border: isSelected ? '2px solid #000000' : '2px solid #d1d5db',
                       cursor: 'pointer',
                       fontWeight: isSelected ? 'bold' : '500',
                       textAlign: 'center',
@@ -131,49 +105,21 @@ export default function TaskCard({
               })}
             </div>
           </div>
-
-          {/* Save Button */}
-          <button
-            className="botao-invertido" 
-            onClick={handleEditSubmit}
-            style={{
-              padding: '0.5rem 1.25rem',
-              borderRadius: '8px',
-              fontWeight: 600,
-              alignSelf: 'flex-start',
-              backgroundColor: '#ffffff', 
-              color: '#000000',          
-              // boxShadow: '0 2px 4px rgba(255, 255, 255, 0.1)',
-              // transition: 'background 0.2s, color 0.2s',     
-            }}
-          >
+          <button className="botao-invertido" onClick={handleEditSubmit} style={{ padding: '0.5rem 1.25rem', borderRadius: '8px', fontWeight: 600, alignSelf: 'flex-start', backgroundColor: '#ffffff', color: '#000000' }}>
             Salvar
           </button>
         </div>
       ) : (
         <>
-          {/* Card Header (Toggle, Title, Status, Actions) */}
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-            }}
-          >
-            {/* Left side: Toggle and Title */}
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-              <button
-                onClick={() => onToggle(id)}
-                style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
-                title="Marcar como concluída"
-              >
+              <button onClick={() => onToggle(id)} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0 }} title="Marcar como concluída">
                 {completed ? <CheckCircle size={20} color="#10B981" /> : <Circle size={20} color="#6B7280" />}
               </button>
               <span className="tarefa-titulo" style={{ textDecoration: completed ? 'line-through' : 'none' }}>
                 {title}
               </span>
             </div>
-            {/* Right side: Status and Action Buttons */}
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
               <span className={completed ? 'status-concluida' : 'status-pendente'}>
                 {completed ? 'Concluída' : 'Pendente'}
@@ -189,81 +135,49 @@ export default function TaskCard({
               </button>
             </div>
           </div>
-
-          {/* Description */}
           {description && (
             <div className="tarefa-descricao" style={{ textDecoration: completed ? 'line-through' : 'none', marginTop: '0.5rem' }}>
               {description}
             </div>
           )}
-
-          {/* Display Tags as Badges */}
+          {/* <p style={{ fontSize: '0.75rem', color: '#6B7280', marginTop: '0.5rem' }}>
+            Criada em: {new Date(creationDate).toLocaleDateString('pt-BR')}
+          </p> */}
           {tags && tags.length > 0 && (
             <div style={{ marginTop: '0.75rem', display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
               {tags.map((tagId) => {
                 const tagObject = PREDEFINED_TAGS.find(t => t.id === tagId);
                 if (!tagObject) {
-                  return (
-                    <span key={tagId} className="tag-badge" style={{ backgroundColor: '#E0E0E0', color: '#333333' }}>
-                      {tagId}
-                    </span>
-                  );
+                  return (<span key={tagId} className="tag-badge" style={{ backgroundColor: '#E0E0E0', color: '#333333', padding: '0.25em 0.6em', borderRadius: '12px', fontSize: '0.75rem', fontWeight: 500 }}>{tagId}</span> );
                 }
                 return (
-                  <span
-                    key={tagObject.id}
-                    className="tag-badge"
-                    style={{
-                      backgroundColor: tagObject.color,
-                      color: '#000000', 
-                      padding: '0.25em 0.6em',
-                      borderRadius: '12px',
-                      fontSize: '0.75rem',
-                      fontWeight: 500, 
-                      display: 'inline-block',
-                    }}
-                  >
+                  <span key={tagObject.id} className="tag-badge" style={{ backgroundColor: tagObject.color, color: '#000000', padding: '0.25em 0.6em', borderRadius: '12px', fontSize: '0.75rem', fontWeight: 500, display: 'inline-block' }}>
                     {tagObject.label}
                   </span>
                 );
               })}
             </div>
           )}
-
-          {/* Comments Section */}
           {showComments && (
             <div style={{ marginTop: '1rem', borderTop: '1px solid #e5e7eb', paddingTop: '1rem' }}>
               <strong style={{ marginBottom: '0.5rem', display: 'block' }}>Comentários:</strong>
               {comments.length === 0 ? (
                 <p style={{ fontStyle: 'italic', color: '#666' }}>Nenhum comentário ainda.</p>
               ) : (
-                <ul style={{ listStyle: 'none', paddingLeft: 0, marginTop: '0.5rem' }}> 
+                <ul style={{ listStyle: 'none', paddingLeft: 0, marginTop: '0.5rem' }}>
                   {comments.map((comment, idx) => (
-                    <li key={idx} style={{ marginBottom: '0.5rem', fontSize: '0.875rem' }}> 
-                      {comment.text}
-                      <br />
+                    <li key={idx} style={{ marginBottom: '0.5rem', fontSize: '0.875rem' }}>
+                      {comment.text} <br />
                       <small style={{ color: "#999" }}>
-                        {new Date(comment.date).toLocaleString('pt-BR', {
-                          day: '2-digit', month: '2-digit', year: 'numeric',
-                          hour: '2-digit', minute: '2-digit',
-                        })}
+                        {new Date(comment.date).toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
                       </small>
                     </li>
                   ))}
                 </ul>
               )}
-              {/* Add Comment Form */}
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginTop: '0.75rem' }}>
-                <input
-                  type="text"
-                  value={newComment}
-                  onChange={(e) => setNewComment(e.target.value)}
-                  placeholder="Adicionar comentário..."
-                  className="input-estilizado input-comentario"
-                />
-                <button onClick={handleAddComment} className="botao-invertido botao-comentario">
-                  Enviar
-                </button>
+                <input type="text" value={newComment} onChange={(e) => setNewComment(e.target.value)} placeholder="Adicionar comentário..." className="input-estilizado input-comentario" />
+                <button onClick={handleAddComment} className="botao-invertido botao-comentario"> Enviar </button>
               </div>
             </div>
           )}
