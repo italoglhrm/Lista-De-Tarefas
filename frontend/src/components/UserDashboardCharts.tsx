@@ -6,7 +6,7 @@ import {
 interface UserDashboardProps {
   user: string;
   data: {
-    status: { pendentes: number; em_andamento: number; concluídas: number };
+    status: { pendentes: number; em_andamento: number; concluidas: number };
     por_dia: { date: string; count: number }[];
     tags_top: { label: string; count: number }[];
     tempo_medio_conclusao: number;
@@ -17,9 +17,9 @@ interface UserDashboardProps {
 export default function UserDashboardCharts({ user, data }: UserDashboardProps) {
   const status = data?.status || {};
   const statusData = [
-    { name: 'Pendentes', value: status.pendentes ?? 0, color: '#FACC15' },
-    { name: 'Em Andamento', value: status.em_andamento ?? 0, color: '#3B82F6' },
-    { name: 'Concluídas', value: status.concluídas ?? 0, color: '#9333EA' },
+    { name: 'Pendentes', value: status["pendentes"] ?? 0, color: '#FACC15' },
+    { name: 'Em Andamento', value: status["em_andamento"] ?? 0, color: '#3B82F6' },
+    { name: 'Concluídas', value: status["concluidas"] ?? 0, color: '#9333EA' },
   ];
 
   const pieColors = ['#9333EA', '#FACC15', '#3B82F6', '#10B981', '#EC4899'];

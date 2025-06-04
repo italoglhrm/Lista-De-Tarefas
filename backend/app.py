@@ -9,7 +9,7 @@ from collections import Counter
 from dateutil import parser, tz
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, resources={r"/*": {"origins": "*"}})
 
 # Configuração do Redis e Cache
 app.config['CACHE_TYPE'] = 'RedisCache'
@@ -98,68 +98,93 @@ def excluir_tarefa(tarefa_id):
     tarefas.delete_one({"_id": ObjectId(tarefa_id)})
     return '', 204
 
-# Endpoint do Dashboard
+@app.route("/dashboard/clear-cache", methods=["POST"])
+def clear_dashboard_cache():
+    cache.delete("dashboard")
+    print("🧹 Cache do dashboard limpo com sucesso.")
+    return jsonify({"message": "Cache limpo."}), 200
+
 @app.route("/dashboard", methods=["GET"])
-@cache.cached(timeout=60, key_prefix='dashboard')
+#@cache.cached(timeout=60, key_prefix='dashboard')  # Reative depois dos testes
 def dashboard():
-    usuarios = ["Ítalo", "Julia"]
-    resultado = {}
+    try:
+        print("🔍 Iniciando geração do dashboard...")
+        usuarios = ["Ítalo", "Julia"]
+        resultado = {}
 
-    for usuario in usuarios:
-        dados = {
-            "status": {"pendentes": 0, "em_andamento": 0, "concluídas": 0},
-            "por_dia": [],
-            "tags_top": [],
-            "tempo_medio_conclusao": 0,
-            "taxa_conclusao_semanal": 0
-        }
+        for usuario in usuarios:
+            print(f"➡️  Processando usuário: {usuario}")
+            dados = {
+                "status": {"pendentes": 0, "em_andamento": 0, "concluidas": 0},
+                "por_dia": [],
+                "tags_top": [],
+                "tempo_medio_conclusao": 0,
+                "taxa_conclusao_semanal": 0
+            }
 
-        tarefas_usuario = list(tarefas.find({"idUsuario": usuario}))
-        tag_counter = Counter()
-        concluidas_por_dia = Counter()
-        tempos_conclusao = []
-        tarefas_ultimos_7_dias = 0
+            tarefas_usuario = list(tarefas.find({"idUsuario": usuario}))
+            print(f"   • {len(tarefas_usuario)} tarefas encontradas")
 
-        for tarefa in tarefas_usuario:
-            status = tarefa.get("status", "pendente")
-            if status in dados["status"]:
-                dados["status"][status] += 1
+            tag_counter = Counter()
+            concluidas_por_dia = Counter()
+            tempos_conclusao = []
+            tarefas_ultimos_7_dias = 0
 
-            if status == "concluída":
-                try:
-                    dt = parser.parse(tarefa.get("creationDate"))
-                    delta = datetime.now(timezone.utc) - dt
-                    tempos_conclusao.append(delta.total_seconds() / 86400)  # dias
-                    data_formatada = dt.strftime("%Y-%m-%d")
-                    concluidas_por_dia[data_formatada] += 1
-                    if delta.days <= 7:
-                        tarefas_ultimos_7_dias += 1
-                except Exception:
-                    pass
+            for tarefa in tarefas_usuario:
+                status = tarefa.get("status", "pendente").strip().lower()
+                mapa_status = {
+                    "pendente": "pendentes",
+                    "em andamento": "em_andamento",
+                    "concluída": "concluidas"
+                }
+                chave = mapa_status.get(status)
 
-            for tag in tarefa.get("tags", []):
-                if isinstance(tag, dict):
-                    tag_counter[tag.get("label", "desconhecida")] += 1
+                print(f"-----> Status detectado: '{status}' → chave: '{chave}'")
 
-        # Gerar linha do tempo contínua mesmo sem tarefas
-        if concluidas_por_dia:
-            todas_datas = sorted(concluidas_por_dia.keys())
-            inicio = parser.parse(todas_datas[0]).date()
-            fim = parser.parse(todas_datas[-1]).date()
-            delta = (fim - inicio).days
-            for i in range(delta + 1):
-                dia = (inicio + timedelta(days=i)).strftime("%Y-%m-%d")
-                if dia not in concluidas_por_dia:
-                    concluidas_por_dia[dia] = 0
+                if chave in dados["status"]:
+                    dados["status"][chave] += 1
 
-        dados["por_dia"] = [{"date": d, "count": concluidas_por_dia[d]} for d in sorted(concluidas_por_dia)]
-        dados["tags_top"] = [{"label": tag, "count": count} for tag, count in tag_counter.most_common(5)]
-        dados["tempo_medio_conclusao"] = round(sum(tempos_conclusao) / len(tempos_conclusao), 1) if tempos_conclusao else 0
-        dados["taxa_conclusao_semanal"] = round(tarefas_ultimos_7_dias / 7, 1)
+                if status == "concluída":
+                    try:
+                        dt = parser.parse(tarefa.get("creationDate"))
+                        delta = datetime.now(timezone.utc) - dt
+                        tempos_conclusao.append(delta.total_seconds() / 86400)
+                        data_formatada = dt.strftime("%Y-%m-%d")
+                        concluidas_por_dia[data_formatada] += 1
+                        if delta.days <= 7:
+                            tarefas_ultimos_7_dias += 1
+                    except Exception as e:
+                        print(f"⚠️ Erro ao processar data de conclusão: {e}")
 
-        resultado[usuario] = dados
+                for tag in tarefa.get("tags", []):
+                    if isinstance(tag, dict):
+                        tag_counter[tag.get("label", "desconhecida")] += 1
 
-    return jsonify(resultado)
+            if concluidas_por_dia:
+                todas_datas = sorted(concluidas_por_dia.keys())
+                inicio = parser.parse(todas_datas[0]).date()
+                fim = parser.parse(todas_datas[-1]).date()
+                delta = (fim - inicio).days
+                for i in range(delta + 1):
+                    dia = (inicio + timedelta(days=i)).strftime("%Y-%m-%d")
+                    if dia not in concluidas_por_dia:
+                        concluidas_por_dia[dia] = 0
+
+            dados["por_dia"] = [{"date": d, "count": concluidas_por_dia[d]} for d in sorted(concluidas_por_dia)]
+            dados["tags_top"] = [{"label": tag, "count": count} for tag, count in tag_counter.most_common(5)]
+            dados["tempo_medio_conclusao"] = round(sum(tempos_conclusao) / len(tempos_conclusao), 1) if tempos_conclusao else 0
+            dados["taxa_conclusao_semanal"] = round(tarefas_ultimos_7_dias / 7, 1)
+
+            resultado[usuario] = dados
+            print(f"✅ Dashboard parcial de {usuario} concluído.")
+
+        print("✅ Dashboard final gerado com sucesso.")
+        return jsonify(resultado)
+
+    except Exception as e:
+        print("❌ Erro interno no endpoint /dashboard:", str(e))
+        return jsonify({"error": "Erro interno", "detalhes": str(e)}), 500
+
 
 if __name__ == "__main__":
     app.run(debug=True)

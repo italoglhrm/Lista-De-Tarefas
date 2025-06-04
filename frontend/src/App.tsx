@@ -26,9 +26,11 @@ export interface Task {
 
 interface DashboardData {
   [user: string]: {
-    status: { pendentes: number; em_andamento: number; concluídas: number };
+    status: { pendentes: number; em_andamento: number; concluidas: number };
     por_dia: { date: string; count: number }[];
     tags_top: { label: string; count: number }[];
+    tempo_medio_conclusao: number;
+    taxa_conclusao_semanal: number;
   };
 }
 
@@ -263,20 +265,22 @@ export default function App() {
           )}
         </section>
 
-        {Object.entries(dashboardData || {}).map(([userKey, data]) =>
-          userKey === currentUser ? (
-            <UserDashboardCharts
-              key={`charts-${userKey}`}
-              user={userKey}
-              data={data as {
-                status: { pendentes: number; em_andamento: number; concluídas: number };
-                por_dia: { date: string; count: number }[];
-                tags_top: { label: string; count: number }[];
-                tempo_medio_conclusao: number;
-                taxa_conclusao_semanal: number;
-              }}
-            />
-          ) : null
+        {dashboardData[currentUser] && (
+          <UserDashboardCharts
+            key={`charts-${currentUser}`}
+            user={currentUser}
+            data={{
+              status: {
+                pendentes: dashboardData[currentUser]?.status?.pendentes ?? 0,
+                em_andamento: dashboardData[currentUser]?.status?.em_andamento ?? 0,
+                concluidas: dashboardData[currentUser]?.status?.concluidas ?? 0,
+              },
+              por_dia: dashboardData[currentUser]?.por_dia ?? [],
+              tags_top: dashboardData[currentUser]?.tags_top ?? [],
+              tempo_medio_conclusao: dashboardData[currentUser]?.tempo_medio_conclusao ?? 0,
+              taxa_conclusao_semanal: dashboardData[currentUser]?.taxa_conclusao_semanal ?? 0,
+            }}
+          />
         )}
       </main>
     </>
