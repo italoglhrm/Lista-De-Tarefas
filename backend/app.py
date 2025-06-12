@@ -105,7 +105,7 @@ def clear_dashboard_cache():
     return jsonify({"message": "Cache limpo."}), 200
 
 @app.route("/dashboard", methods=["GET"])
-#@cache.cached(timeout=60, key_prefix='dashboard')  # Reative depois dos testes
+#@cache.cached(timeout=60, key_prefix='dashboard') 
 def dashboard():
     try:
         print("🔍 Iniciando geração do dashboard...")
